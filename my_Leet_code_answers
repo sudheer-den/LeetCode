@@ -1,0 +1,1570 @@
+DSA
+Leetcode answers
+Sudheer Vanapalli
+ 
+1. Add n numbers
+
+Ans: 
+function AddNumbers(n) {
+    var total = 0;
+    for (i = 1; i <= n; i++) {
+        total += i
+    }
+    return total;
+}
+
+// simplest one
+function AddnNumbers(n) {
+    return n * (n + 1) / 2
+}
+
+        console.log(AddNumbers(3))
+
+
+
+2. check if two strings are anagram
+	// input ->  two strings, 
+	//output -> true/ false
+Ans:
+function checkIfAnaggram(stringOne, StringTwo) {
+    // loop through each string letter and count number of occurances of each letter
+    // compare two objects deep
+    // should we avaoid spaces and special characters? 
+    //should we consider only lower case?
+
+    if (stringOne.length !== StringTwo.length) {
+        retrun false
+    }
+    
+    let stringOneObj = {}
+    let stringTwoObj = {}
+    for(let char of stringOne) {
+        let lowerChar = char.toLowerCase()
+        stringOneObj[char] = (stringOneObj[char] || 0) + 1
+    }
+    for(let char of StringTwo) {
+        let lowerChar = char.toLowerCase()
+        stringTwoObj[char] = (stringTwoObj[char] || 0) + 1
+    }
+
+    for(const key in stringOneObj) {
+        if (stringOneObj[key] !== stringTwoObj[key]) {
+            return false
+        }
+    }
+
+    // prev work
+    // for( const key in stringOneObj) {
+    //     if(stringOneObj[key] !== stringTwoObj[key]){
+    //         return false
+    //     }
+    // }
+    // return true
+
+    if(Object.keys(stringOneObj).length === Object.keys(stringTwoObj).length) {
+        return Object.keys(stringOneObj).every(key => stringOneObj[key] === stringTwoObj[key])
+    }
+
+    return false
+}
+
+checkIfAnaggram("aaaaahh", "aaaaahh")
+
+
+// better version - can avaoid last loop
+
+function validAnagram(str1, str2) {
+    if (str1.length !== str2.length) {
+        return false
+    }
+    
+    const loopObj= {}
+    for(const char in str1) {
+        loopObj[char] = (loopObj[char] || 0) + 1
+    }
+
+    for(const char in str2) {
+        if (!loopObj[char]) {
+            return false
+        } else {
+            loopObj[char] -=1
+        }
+    }
+    return true
+}
+
+validAnagram("aaaaa", "aaaaa")
+
+
+
+3. // binary  heps are same as binary trees
+// maxbinaryheap -> parents is always greater than its child
+
+class BinaryHeap {
+    constructor() {
+        this.values = []
+    }
+
+
+    //for bubbling up thhe parent node is always at floor((n-1)/2)
+    
+    insert(value){
+        
+        this.values.push(value)
+        
+        this.bubbleUp(value)
+        
+    }
+
+    bubbleUp(element) {
+        let lastindex = this.values.length - 1
+        let parentIndex = Math.floor((lastindex - 1)/2)
+        while(parentIndex >= 0) {
+            if (this.values[parentIndex] < this.values[index]) {
+                [this.values[parentIndex],this.values[index]] = [this.values[index], this.values[parentIndex]]
+
+                var currentParentInndex = parentIndex
+                parentIndex = Math.floor((currentParentInndex - 1)/ 2)
+                
+            }
+            
+        }
+    }
+}
+
+
+4. Create a binary search tree
+
+Ans:
+
+class Node {
+    constructor(value) {
+        this.value = value
+        this.left = null;
+        this.right = null;
+    }
+}
+
+class BinarySearchTree {
+    constructor() {
+        this.root = null;
+        this.length = 0
+    }
+
+    // insert a node at the proper order in the binary search tree
+    insert(value) {
+        var node = new Node(value);
+        if(!this.root) {
+            this.root = node
+        } else {
+            var current = this.root 
+            while (current) {
+                console.log(current.value)
+                // break
+                if (current.value > value) {
+                    if (current.left) {
+                        current = current.left
+                        continue
+                    } else {
+                        current.left = node
+                        break
+                    }
+                    
+                } else if (current.value < value) {
+                    if (current.right) {
+                        current = current.right;
+                        continue
+                    } else {
+                        current.right = node
+                        break
+                    }
+                }
+            }
+        }
+        this.length++
+        return this
+    }
+
+    //find a value
+    find(value) {
+        var found = false
+        if (!this.root) return false
+        var current = this.root
+        while(current) {
+            if (current.value == value) {
+                return current;
+            }else if (current.value > value) {
+                if (current.leff) {
+                    current = current.left
+                }
+            } else if (current.value < value) {
+                if(current.right) {
+                    current = current.right
+                }
+            }
+        }
+        return current;
+    }
+}
+5. Can jump to last index
+'[2,0,0] -> true'
+'[3,2,1,0,4] ->. false'
+Ans:
+function canJump(arr) {
+    if(!arr || !arr.length) return false
+    let validIndex = arr.length - 1
+    let i = arr.length - 2
+    while (i>=0){
+        if (i + arr[i] >= validIndex){
+            validIndex = i
+        }
+        i--;
+    }
+    return validIndex == 0
+}
+canJump([3,2,1,0,4])
+6. check if linked list has a cycle
+Ans:
+
+function hasCycle(head) {
+    let fastPointer = head
+    let slowPointer = head
+    while (fastPointer != null || fastPointer.next != null) {
+        fastPointer = fastPointer.next.next
+        slowPointer = slowPointer.next
+        if (fastPointer == slowPointer) {
+            return true
+        }
+    }
+    return false
+}
+
+7. Find longest substring
+Ans:
+function findLongestSubstring(str) {
+  let longest = 0;
+  let seen = {};
+  let start = 0;
+ 
+  for (let i = 0; i < str.length; i++) {
+    let char = str[i];
+    if (seen[char]) {
+      start = Math.max(start, seen[char]);
+    }
+    // index - beginning of substring + 1 (to include current in count)
+    longest = Math.max(longest, i - start + 1);
+    // store the index of the next char so as to not double count
+    seen[char] = i + 1;
+  }
+  return longest;
+}
+
+findLongestSubstring("helloabchgfr")
+
+8. string count
+   // given two strings str1, st2, count how many times str2 appears in str1
+
+Ans:
+function stringSearch(outerString, innerString) {
+    if (outerString.length < innerString.length) return -1
+    let count = 0
+    for (var i=0; i <= outerString.length - innerString.length; i++) {
+        const sub = outerString.substr(i, innerString.length)
+        console.log(sub)
+        if (sub == innerString) {
+            count ++
+        }
+    }
+    return count
+}
+
+stringSearch("abcdhcsbkbksabcdscsabc", "bk")
+
+9. 'check if an array has perfect square of an given number'
+   	'[1,2,3,4,5,6,7,8] , n = 9'
+	'output ->. 3'
+Ans:
+
+function isPerfectSquare(arr, n) {
+    if (!arr || !arr.length) return false
+    if (!n) return false
+
+    let right = arr.length - 1
+    let left = 0
+
+    while (left <= right) {
+        const midPoint = Math.floor((left + right) / 2)
+        if (arr[midPoint] ** 2 > n) {
+            right = midPoint - 1
+        } else if (arr[midPoint] ** 2 < n) {
+            left = midPoint + 1
+        } else {
+            return arr[midPoint]
+        }
+    }
+    
+    return false
+}
+
+isPerfectSquare([1,2,3,4,5,6,7,8], 9)
+
+
+10. Rob house
+   'given an array of houses having money in each house [2,3,5,6] , what is the maximum amount of money can be robbed,'
+'Note: adjacent houses can not be robbed'
+	'[1,2,3,1]'
+	'output ->. 4'
+Ans:
+function maxProfit(arr) {
+    if (!arr || !arr.length) return false
+
+    if(arr.length == 1) return arr[0]
+
+    const profitArray = []
+
+    profitArray.push(arr[0])
+    profitArray.push(Math.max(arr[0], arr[1]))
+
+    let i = 2
+    while (i <= arr.length - 1) {
+        
+        profitArray.push(Math.max(profitArray[i-1], arr[i] + profitArray[i-2] ))
+        i++
+    }
+    
+    return profitArray
+}
+
+maxProfit([1,2,3,1])
+
+
+11. Convert ROMAN to intergers
+   // given two strings str1, st2, count how many times str2 appears in str1
+
+Ans:
+
+/**
+ * @param {string} s
+ * @return {number}
+ */
+
+const getDeductedSum = (current, next) => {
+        if(deductionMap[current].indexOf(next) !== -1) {
+            console.log(numMap[next] - numMap[current])
+            return numMap[next] - numMap[current]
+        }
+        
+        return undefined
+    };
+const romanToInt = function(s) {
+    const numMap = {
+        'I': 1, 'V': 5, 'X': 10, 'L': 50, 'C': 100, 'D': 500, 'M': 1000
+    };
+    const deductionMap = {
+        'I': ['X', 'V'],
+        'X': ['L', 'C'],
+        'C': ['D', 'M']
+    };
+    let i = 0;
+    let sum = 0;
+    const givenLength = s.length -1
+
+    
+
+    while(i <= givenLength) {
+        if (deductionMap[s[i]]) {
+            if (i !== givenLength) {
+                sum +=numMap[s[i]]
+            } else {
+                
+                const deductedSum = getDeductedSum(s[i], s[i+1])
+                console.log(getDeductedSum(s[i], s[i+1]))
+                if(deductedSum) {
+                    sum +=deductedSum
+                    i++
+                } else {
+                    sum +=numMap[s[i]]
+                }
+            }
+        } else {
+            sum +=numMap[s[i]]
+        }
+        i++
+    }
+    console.log("cdsdhjbcsjdhdbcjsdcsd")
+    return sum
+};
+
+romanToInt("MCMXCIV")
+
+
+
+12. simple sorting
+   
+
+Ans:
+function simpleSorting(arr) {
+    var result = []
+
+    if (arr.length == 0) return;
+    function helper(arrInput) {
+        if (arrInput[0] > )
+    }
+    helper(arr)
+}
+
+
+13. Implement singly linked list
+   
+
+Ans:
+
+class Node {
+    constructor(val) {
+        this.value = val
+        this.next = null
+    }
+}
+
+class SinglyLinkedList {
+    constructor() {
+        this.head = null;
+        this.tail = null;
+        this.length = null;
+    }
+
+    //addding node at thge end of the list
+    push(value) {
+        var node = new Node(value)
+        if (this.head == null) {
+            this.head = node
+            this.tail = node
+        } else {
+            this.tail.next = node
+            this.tail = node
+        }
+        this.length = this.length + 1
+        return this
+    }
+
+    // removingg node from end of the list
+    pop() {
+        if (this.length == 0) return undefined
+        var current = this.head
+        var newTail = current
+        while(current.next) {
+            newTail = current
+            current = current.next
+        }
+        this.tail = newTail
+        this.tail.next = null
+        this.length--;
+        if (this.length == 0) {
+            this.head = null;
+            this.tail = null;
+        }
+        return current
+    }
+
+    // removing node from beginning of the list
+    shift() {
+        if (this.length == 0) return undefined
+        var current = this.head || {}
+        if (current.next) {
+            this.head = current.next
+        } else {
+            this.head = null
+        }
+        this.length--;
+        return current
+    }
+
+    // addingg node at the beginning of the list
+    unshift(val){
+        var node = new Node(val)
+        var current = this.head
+        if (!current) {
+            this.head = node
+            this.tail= node
+        } else {
+            node.next = current
+            this.head = node
+        }
+        this.length++;
+        return this
+    }
+
+    //get value at an index
+    get(index) {
+        if (index < 0 || index > this.length) return null;
+        var current = this.head;
+        var i = 0
+        while(current) {
+            if (i == index) {
+                return current
+            }
+            current = current.next
+            i++
+        }
+    }
+
+    //set the value of a node at an index
+    set(index, value) {
+        var node = this.get(index)
+        if (node) {
+            node.value = value
+            return this
+        }
+        return false
+    }
+
+    //insert a node at given index
+    insert(index, value) {
+        if (index < 0 || index > this.length) return null
+        if (index == this.length){
+            this.push(value)
+        } else if (index == 0) {
+            this.unshift(value) 
+        } else {
+            // get the index node from get
+            var newNode = new Node(value)
+            var prevIndexNode = this.get(index - 1)
+            newNode.next = prevIndexNode.next
+            prevIndexNode.next = newNode
+            this.length++
+            return this
+        }
+    }
+
+    //remove a node at given index
+    remove(index) {
+        if (index < 0 || index > this.length) return null
+        if (index == this.length){
+            this.pop()
+        } else if (index == 0) {
+            this.shifft() 
+        } else {
+            var prevIndexNode = this.get(index - 1)
+            var current = prevIndexNode.next
+            prevIndexNode.next = current.next
+            this.length--
+            return current
+        }
+    }
+
+    //reverse the list
+    reverse() {
+        // swap head and tail
+        var node = this.head
+        this.head = this.tail
+        this.tail = node
+
+        var next;
+        var prev = null;
+
+        for(var i=0; i < this.length ; i++) {
+            next = node.next
+            node.next = prev
+            prev = node;
+            node = next
+            
+        }
+        
+        
+    }
+    
+}
+
+
+14. stock market algorithm
+   'given array of stock prices, what is the max profit can be achieved'
+
+	'[7,1,5,3,6,,4]'
+
+	'output -> buy at 1 and sell at 6'
+
+Ans:
+function stockBuyMaxProfit(prices) {
+    let maxProfit = 0
+
+    if(!prices || prices.length <= 1) return maxProfit
+
+    let minBuyPrice = prices[0]
+
+    let i = 1
+
+    while (i <= prices.length -1) {
+        if (minBuyPrice > prices[i]) {
+            minBuyPrice = prices[i]
+        } else if (minBuyPrice < prices[i]) {
+            maxProfit = Math.max((prices[i] - minBuyPrice), maxProfit)
+        }
+        i++
+    }
+    return maxProfit
+    
+}
+
+stockBuyMaxProfit([7,1,5,3,6,,4,11])
+
+
+15. Unique array elements
+   	// find unique number of elements in an array
+
+	// input: [-1, 2, 3, 4, 4, 5, 5, 5, 7, 7 , 9]  , Output: 7
+Ans:
+
+// simple one
+inputArray = [-1, 2, 3, 4, 4, 5, 5, 5, 7, 7 , 9]
+
+function findUniqueNumberOfElementsSet(arr) {
+    return [...new Set(arr)].length
+}
+
+// findUniqueNumberOfElementsSet(inputArray)
+// using frequency counters
+
+function findUniqueNumberOfElementsFC(arr) {
+    const counterObj = {}
+    for(elem of arr) {
+        counterObj[elem] = (counterObj[elem] | 0) + 1
+    }
+    console.log(counterObj)
+    return Object.keys(counterObj).length
+}
+
+findUniqueNumberOfElementsFC(inputArray)
+
+
+16. Binary search
+   
+
+Ans:
+
+function binarySearch(arr, val){
+  // add whatever parameters you deem necessary - good luck!
+  let start = 0;
+  let end = arr.length - 1
+  while (start <= end) {
+      console.log("start - "+ start + "end -" + end)
+      let middle = Math.floor((start + end)/ 2)
+      if (arr[middle] > val) {
+          end = middle - 1
+      } else if (arr[middle] < val) {
+          start = middle + 1
+      } else {
+          return middle
+      }
+  }
+}
+
+binarySearch([1,2,3,4,5],2)
+
+
+17. Sorting – bubble sort
+   
+
+Ans:
+// sort an array with bubble sort
+
+function bubbleSort(arr) {
+
+    for( i = arr.length - 1; i >=0; i --) {
+        for (j=0; j < i; j ++) {
+            if (arr[j] > arr[j+1]) {
+                [arr[j], arr[j+1]] = [arr[j+1], arr[j]]
+            }
+        }
+    }
+    return arr
+}
+
+// bubbleSort([1,3,2,16,4,3,17,12])
+
+
+//better version
+
+function bubbleSortBetter(arr) {
+
+    for( i = arr.length - 1; i >=0; i --) {
+        var noswap = true
+        for (j=0; j < i; j ++) {
+            if (arr[j] > arr[j+1]) {
+                [arr[j], arr[j+1]] = [arr[j+1], arr[j]]
+                noswap = false
+            }
+        }
+        if(noswap) break;
+    }
+    return arr
+}
+
+bubbleSortBetter([1,3,2,16,4,3,17,12])
+
+
+18. Captipalize first letter
+   
+
+Ans:
+function capitalizeFirst (arr) {
+  // add whatever parameters you deem necessary - good luck!
+  var result = []
+  function helper(arrayInput) {
+      if (arrayInput.length === 0){ 
+          return;
+      } else {
+          var str = arrayInput[0]
+          str = str.charAt(0).toUpperCase() + str.substring(1, str.length)
+          result.push(str)
+      }
+      helper(arrayInput.slice(1))
+  }
+  helper(arr)
+  return result
+}
+
+capitalizeFirst(['car','taco','banana']); // ['Car','Taco','Banana']
+
+
+capitalizeFirst(['car','taco','banana']); // ['Car','Taco','Banana']
+
+
+19. container with most water
+   `You are given an integer array height of length n. There are n vertical lines drawn such that the two endpoints of the ith line are (i, 0) and (i, height[i]).
+
+Find two lines that together with the x-axis form a container, such that the container contains the most water.
+
+Return the maximum amount of water a container can store.
+
+Notice that you may not slant the container.`
+
+Ans:
+const getMaxAreaWater = function (heights) {
+    if (heights.length == 0) return null
+    let start = 0, last = heights.length - 1; maxArea = 0;
+
+    while (start <= last) {
+        const minHeight = Math.min(heights[start], heights[last])
+        const width = last - start
+        const area = minHeight * width
+        
+        maxArea = Math.max(maxArea, area)
+        if (heights[start] < heights[last]) {
+            start++
+        } else {
+            last--;
+        }
+    }
+
+    return maxArea
+}
+
+getMaxAreaWater([1,8,6,2,5,4,8,3,7])
+
+
+20. Doubly linked list
+   
+
+Ans:
+class Node {
+    constructor(value) {
+        this.prev = null
+        this.value = value
+        this.next = null
+    }
+}
+
+class DoublyLinkedList {
+    constructor() {
+        this.head = null
+        this.tail = null
+        this.length = 0
+    }
+
+    push(val) {
+        var node = new Node(val)
+        if (!this.head) {
+            this.head = node
+            this.tail = node
+        } else {
+            var current = this.tail
+            current.next = node
+            node.prev = current
+            this.tail = node
+        }
+        this.length ++;
+        return this
+    }
+
+    pop() {
+        if (this.length == 0) return false
+        var current = this.tail || {}
+        if (current.prev) {
+            current.prev.next = null
+            this.tail = current.prev
+        } else {
+            this.head = null
+            this.tail = null
+        }
+        this.length --;
+        return current
+    }
+
+    // removing an item from start
+    shift() {
+        if (this.length == 0) return false
+        var current = this.head || {}
+        if(current.next) {
+            current.next.prev = null;
+            this.head = current.next
+        } else {
+            this.head = null;
+            this.tail = null;
+        }
+        this.length--;
+        return current
+    }
+
+    //adding an item from start
+    unshift(val){
+        var node = new Node(val)
+        if (!this.head) {
+            this.head = node
+            this.tail = node
+        } else {
+            var current = this.head 
+            node.next = current
+            current.prev = node
+            this.head = node
+        }
+        this.length++
+        return this
+    }
+
+    //get an item at an index
+    get(index) {
+        if (index < 0 || this.length < index) return false
+        var current = this.head
+        var counter = 0
+        while (current) {
+            if (index == counter) {
+                return current
+            }
+            current = current.next
+            counter ++
+        }
+    }
+
+    // set an item at an index
+    set(newValue, index) {
+        if (index < 0 || this.length < index) return false
+        var current = this.head
+        var counter = 0
+        while (current){
+            if (index == counter) {
+                current.value = newValue
+            }
+            current = current.next
+            counter ++
+        }
+        return this
+    }
+
+    //insert node at a given index
+    insert(value, index) {
+        if (index < 0 || this.length < index) return false
+        if (index == 0) return this.unshift(value)
+        if (index == this.length) return this.push(value)
+        var current = this.get(index)
+        var node = new Node(value)
+        node.next = current
+        node.prev = current.prev
+        current.prev.next = node
+        current.prev = node
+        
+        this.length++
+        return this
+    }
+
+    // remove node at a given index
+    remove(index) {
+        if (index < 0 || this.length < index) return false
+        if (index == 0) return this.shift()
+        if (index == this.length) return this.pop()
+        var current = this.get(index)
+
+        current.prev.next = current.next
+        current.next.prev = current.prev
+        this.length --
+        
+        return current
+    }
+
+    //reverse doubly linked list
+    reverse() {
+        if (this.length == 0) return false
+        var current = this.tail 
+        while (current) {
+            [current.next, current.prev] = [current.prev, current.next]
+            current = current.next
+        }
+        [this.head, this.tail] = [this.tail, this.head]
+        return this
+    }
+    
+}
+
+
+21. fibonaaci series
+   
+
+Ans:
+// fib(4) // 3
+// fib(10) // 55
+// fib(28) // 317811
+// fib(35) // 9227465
+
+function fib(num){
+    if ( num <= 2) return 1
+    return fib(num -1 ) + fib (num -2)
+}
+
+fib(4)
+
+
+
+22. Flatten nested array
+   
+
+Ans:
+function flatten(fullArray){
+  // add whatever parameters you deem necessary - good luck!
+  var result = [];
+  function helper(arrayInput) {
+      if (arrayInput.length == 0) return;
+      if (Array.isArray (arrayInput[0])) {
+          helper(arrayInput[0])
+      } else {
+          result.push(arrayInput[0])
+      }
+      helper(arrayInput.splice(1,arrayInput.length -1))
+  }
+  helper(fullArray)
+  return result
+}
+
+// flatten([1, 2, 3, [4, 5] ]) // [1, 2, 3, 4, 5]
+// flatten([1, [2, [3, 4], [[5]]]]) // [1, 2, 3, 4, 5]
+// flatten([[1],[2],[3]]) // [1,2,3]
+flatten([[[[1], [[[2]]], [[[[[[[3]]]]]]]]]]) // [1,2,3]
+
+
+23. generate random array
+   
+
+Ans:
+var data = Array.apply(null, {length: 100000}).map(Function.call, Math.random)
+
+
+24. get the change for amount, greedy algorithm
+   
+
+Ans:
+
+// get change for given currency value
+
+function coinChange(money) {
+
+    var denominations = [2000, 500, 200, 100, 50, 20, 10, 5, 2, 1]
+    var answer = []
+    for (var i = 0; i <= denominations.length - 1; i++) {
+        while (money >= denominations[i]) {
+            money -= denominations[i]
+            answer.push(denominations[i])
+        }
+    }
+    return answer
+}
+
+coinChange(9253)
+
+
+25. insertion sort
+   
+
+Ans:
+function inserstionSort(arr) {
+    for (let i = 0; i <= arr.length -1 ; i ++){
+        for (let j = i + 1; j >= 0; j --){
+            if (arr[j] > arr[j--]) {
+                [arr[j], arr[j--]] = [arr[j--], arr[j]]
+            }
+        }
+    }
+    return arr
+}
+
+selectionSort([1,34,2,5,23,5,6,34,3,5,23,9])
+
+
+26. intersection of two arrays
+   'given two arrays find common elememts'
+
+'arr1: [1,2,3,4,5]'
+'arr2: [2,5,6,7,8]'
+'output: [2, 5]'
+Ans:
+
+function intersectElements(arr1, arr2) {
+    const firstSet = new Set()
+    for(let element of arr1) {
+        firstSet.add(element)
+    }
+
+    const intersectArray = new Set()
+
+    for(let element of arr2) {
+        if (firstSet.has(element)) {
+            intersectArray.add(element)
+        }
+    }
+
+    return [...intersectArray]
+}
+
+intersectElements([1,2,3,4,5], [2,5,6,7,8])
+
+
+27. check pallindrome
+
+Ans:
+
+// isPalindrome('awesome') // false
+// isPalindrome('foobar') // false
+// isPalindrome('tacocat') // true
+// isPalindrome('amanaplanacanalpanama') // true
+// isPalindrome('amanaplanacanalpandemonium') // false
+
+function isPalindrome(str){
+  // add whatever parameters you deem necessary - good luck!
+  var reveresedResult = ''
+  function helper(strInput){
+      var len = strInput.length
+      if (len == 0) {
+          return;
+      }
+      reveresedResult = reveresedResult + strInput[len -1]
+      helper(strInput.slice(0, len - 1))
+  }
+  helper(str)
+  if (str == reveresedResult) {
+      return true
+  }
+  return false
+}
+
+isPalindrome('tacocat')
+
+
+28. is a word subsequence?
+
+Ans:
+
+function isSubsequence(str1, str2) {
+  var i = 0;
+  var j = 0;
+  if (!str1) return true;
+  while (j < str2.length) {
+    if (str2[j] === str1[i]) i++;
+    if (i === str1.length) return true;
+    j++;
+  }
+  return false;
+}
+
+isSubsequence('hello', 'hello world')
+
+29. Get the max of a sub array
+   // get the max of sub array for a consequtive number of elements n
+
+// input : [1, 2, 3, 4, 2, 4, 5, 6, 5] , n = 2 ||| output: 11 - (5 + 6)
+
+Ans:
+
+function getMaxofSubArray(arr, n) {
+    let max = 0
+    for(let i = 0; i <= arr.length - n; i++ ) {
+        let temp = arr[i];
+        for (let j = i + 1; j < i + n ; j ++) {
+            temp += arr[j]
+        }
+        if (temp > max) {
+            max = temp
+        }
+    }
+    return max
+}
+
+getMaxofSubArray([1, 2, 3, 4, 2, 4, 5, 6, 5, 7], 2)
+
+30. merge sort
+   
+
+Ans:
+
+// merges two sorted arrays
+function merge(arr1, arr2) {
+    let i = 0; j = 0;
+    var mergedArray = []
+    console.log(arr1, arr2)
+    while (i < arr1.length) {
+        while (j < arr2.length) {
+            if (arr1[i] < arr2[j]) {
+                mergedArray.push(arr1[i])
+                i++;
+                break;
+            } else if (arr1[i] > arr2[j]) {
+                mergedArray.push(arr2[j])
+                j++
+                break;
+            } else {
+                mergedArray.push(arr1[i])
+                mergedArray.push(arr2[j])
+                i++;
+                j++;
+            }
+        }
+        
+    }
+    if (i == arr1.length && j < arr2.length) {
+        mergedArray.push(...arr2.slice(j, arr2.length))
+    }
+    return mergedArray
+}
+
+// merge([1,3,5, 8, 11], [1, 2, 4, 9, 17])
+
+
+// split arrays into half untile the array becomes a length of 1, so that length of 1 is already sorted and then we call merge
+function mergeSort(arr) {
+    if (arr.length <= 1) return arr;
+    var midpoint = Math.floor(arr.length/2)
+    var left = mergeSort(arr.slice(0, midpoint))
+    var right = mergeSort(arr.slice(midpoint))
+    return merge(left, right)
+}
+
+mergeSort([1,2,1,4,5,3,78,45,34,56,98])
+
+31. Implement priority queue
+
+Ans:
+
+class PriorityQueue {
+    constructor(){
+        this.values = [];
+    }
+    enqueue(val, priority){
+        let newNode = new Node(val, priority);
+        this.values.push(newNode);
+        this.bubbleUp();
+    }
+    bubbleUp(){
+        let idx = this.values.length - 1;
+        const element = this.values[idx];
+        while(idx > 0){
+            let parentIdx = Math.floor((idx - 1)/2);
+            let parent = this.values[parentIdx];
+            if(element.priority >= parent.priority) break;
+            this.values[parentIdx] = element;
+            this.values[idx] = parent;
+            idx = parentIdx;
+        }
+    }
+    dequeue(){
+        const min = this.values[0];
+        const end = this.values.pop();
+        if(this.values.length > 0){
+            this.values[0] = end;
+            this.sinkDown();
+        }
+        return min;
+    }
+    sinkDown(){
+        let idx = 0;
+        const length = this.values.length;
+        const element = this.values[0];
+        while(true){
+            let leftChildIdx = 2 * idx + 1;
+            let rightChildIdx = 2 * idx + 2;
+            let leftChild,rightChild;
+            let swap = null;
+
+            if(leftChildIdx < length){
+                leftChild = this.values[leftChildIdx];
+                if(leftChild.priority < element.priority) {
+                    swap = leftChildIdx;
+                }
+            }
+            if(rightChildIdx < length){
+                rightChild = this.values[rightChildIdx];
+                if(
+                    (swap === null && rightChild.priority < element.priority) || 
+                    (swap !== null && rightChild.priority < leftChild.priority)
+                ) {
+                   swap = rightChildIdx;
+                }
+            }
+            if(swap === null) break;
+            this.values[idx] = this.values[swap];
+            this.values[swap] = element;
+            idx = swap;
+        }
+    }
+}
+
+class Node {
+    constructor(val, priority){
+        this.val = val;
+        this.priority = priority;
+    }
+}
+
+let ER = new PriorityQueue();
+ER.enqueue("common cold",5)
+ER.enqueue("gunshot wound", 1)
+ER.enqueue("high fever",4)
+ER.enqueue("broken arm",2)
+ER.enqueue("glass in foot",3)
+
+
+
+32. rain water trap
+   // Given n non-negative integers representing an elevation map where the width of each bar is 1, compute how much water it can trap after raining.
+
+Ans:
+
+function rainWaterTrap(heights) {
+    var start = 0, end = heights.length - 1, totalWater =0, maxLefft = 0, maxRight = 0
+
+    while (start <= end) {
+        if (heights[start] <= heights[end]) {
+            if (heights[start] >= maxLefft){
+                maxLefft = heights[start]
+            } else {
+                totalWater += maxLefft - heights[start]
+            }   
+            start ++
+        } else {
+            if (heights[end] >= maxRight) {
+                maxRight = heights[end]
+            } else {
+                totalWater += maxRight - heights[end]
+            }
+            end --
+
+        }
+    }
+    return totalWater
+    
+}
+
+rainWaterTrap([0,1,0,2,1,0,1,3,2,1,2,1])
+
+33. reverse a string using recursive programming
+   
+
+Ans:
+
+function reverse(str){
+  var result = ''
+  function helper(strInput){
+      var len = strInput.length
+      if(len == 0){
+          return;
+      }
+      
+      
+      result = result + strInput[len -1]
+      helper(strInput.slice(0, len -1))
+  }
+  helper(str)
+  return result
+}
+
+reverse('awesome') // 'emosewa'
+// reverse('rithmschool') // 'loohcsmhtir'
+
+34. Binary search element
+   
+
+Ans:
+
+// search an element from a sorted array and return index
+
+// inout: [1, 3, 4, 5, 7, 18, 23, 34, 45] , search = 18,   output: 5
+
+//Naive solution
+
+const input = [1, 3, 4, 5, 7, 18, 23, 34, 45]
+const n = 18
+
+function searchAnItem(arr, n) {
+    for(i in arr) {
+        if (arr[i] === n) {
+            return i
+        }
+    }
+    return -1  
+}
+
+// searchAnItem(input, n)
+
+
+// Binary search to optimize the time complexity
+
+function searchItemBinary(arr, n) {
+    let min = 0;
+    let max = arr.length -1;
+    while (min <= max) {
+        const middle = Math.floor((min+max)/2)
+        console.log("midddle - " + middle)
+        console.log("man - "+ min)
+        console.log("max - "+ max)
+        if (arr[middle] < n) {
+            min = middle + 1
+        } else if(arr[middle] > n) {
+            max = middle - 1
+        } else {
+            return middle
+        }
+    }
+    return -1 
+}
+
+searchItemBinary(input, n)
+
+34. Selection sort
+   
+
+Ans:
+
+// find minimum value in each iteration and replace with frist value
+
+function selectionSort(arr) {
+    for(var i = 0; i <= arr.length - 1; i++) {
+        var min = i
+        for (j = i + 1; j <= arr.length - 1 ; j ++) {
+            if (arr[j] < arr[min]) {
+                min = j
+            }
+        }
+        if (i !== min) {
+            [arr[i], arr[min]] = [arr[min], arr[i]]
+        }
+    }
+    return arr
+}
+
+selectionSort([1,34,2,5,23,5,6,34,3,5,23,9])
+
+35. Simple factorial
+
+Ans:
+function getFactorial(num) {
+    if (num == 1) return 1;
+    return num * getFactorial(num - 1)
+}
+
+// getFactorial(4)
+
+
+
+function getFactorialByIteration(num) {
+
+    let  fact = num
+    for (i = num; i >= 2; i -- ) {
+        fact = fact * (i - 1)
+    }
+    return fact
+}
+
+getFactorialByIteration(3)
+
+
+36. simple recursion
+
+
+Ans:
+
+function countDown(num) {
+    if (num <= 0) {
+        console.log("All done!")
+        return;
+    }
+    console.log(num)
+    num--;
+    countDown(num)
+    
+}
+
+// countDown(5)
+
+function sumRange(num) {
+    if (num == 0) return 0;
+    return num + sumRange(num - 1)
+}
+
+// sumRange(5)
+
+
+function findOddValuesOfArray(arr) {
+    const result = []
+    function helper(arrayInput){
+        if (arrayInput.length == 0) {
+            return;
+        }
+        if (arrayInput[0] % 2 !== 0) {
+            result.push(arrayInput[0])
+        }
+        helper(arrayInput.slice(1))
+    }
+    helper(arr)
+    return result
+}
+
+findOddValuesOfArray([1,2,3,4,5,6,7,8])
+
+37. stringify object numbers
+
+Ans:
+
+function stringifyNumbers(obj){
+    for (var key in obj) {
+        if (typeof (obj[key]) === 'object') {
+            stringifyNumbers(obj[key])
+        } else if (typeof (obj[key]) === 'number') {
+            obj[key] = obj[key].toString()
+        }
+    }
+    return obj;
+}
+
+let obj = {
+    num: 1,
+    test: [],
+    data: {
+        val: 4,
+        info: {
+            isRight: true,
+            random: 66
+        }
+    }
+}
+
+// stringifyNumbers(obj)
+
+
+function collectStrings(obj) {
+    var result = []
+    for (var key in obj) {
+        if (typeof(obj[key]) === 'object') {
+            result = result.concat(collectStrings(obj[key]))
+        } if (typeof(obj[key]) === 'string') {
+            result.push(obj[key])
+        }
+    }
+    return result
+}
+
+
+let strobj = {
+    stuff: "foo",
+    data: {
+        val: {
+            thing: {
+                info: "bar",
+                moreInfo: {
+                    evenMoreInfo: {
+                        weMadeIt: "baz"
+                    }
+                }
+            }
+        }
+    }
+}
+
+collectStrings(strobj) // ["foo", "bar", "baz"])
+
+38. two sum
+   //given array of integers return inices of two numbers that add up to given number
+
+Ans:
+
+function twoSum(arr, num) {
+
+    for(var i = 0; i <= arr.length -1; i ++){
+        for (var j = i+1; j <=arr.length -1; j++) {
+            if (arr[i] + arr[j] === num) {
+                return [i,j]
+            }
+        }
+    }
+    return null
+}
+var x = [1,2,3,5,15,34,21]
+var num = 8
+
+// twoSum(x, 8)
+
+function twoSumOptimized(arr, num) {
+    const obj = {}
+    let i =0;
+    while (i <= arr.length - 1) {
+        const difference = num - arr[i]
+        if (obj[difference]){
+            return [obj[diffference], i]
+        } else {
+            obj[difference] = i
+        }
+    }
+    return null
+}
+
+twoSum(x, 8)
+
+39. check for valid braces
+   // a stringg is valid parenthhesis or nopt '{[]}' // valid , '{]](}' // not valid
+
+Ans:
+
+
+function validPatanthesis(s) {
+    if (s.length % 2 !== 0) return false
+    const stack = []
+
+    const  braceMap = new Map([
+        ['(', ')'],
+        ['[', ']'],
+        ['{', '}']
+    ]);
+    let i = 0
+    while (i <= s.length -1) {
+        if (braceMap.has(s[i])) {
+            stack.push(braceMap.get(s[i]))
+        } else {
+            if (s[i] !== stack.pop()) {
+                return false
+            }
+        }
+        i++
+    }
+    console.log(stack)
+    return stack.length === 0
+}
+
+validPatanthesis('{[]}')
+
+
+
+Continued!!!!!!!
